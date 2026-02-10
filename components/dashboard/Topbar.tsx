@@ -305,10 +305,20 @@ export default function Topbar({ onMenuClick }: { onMenuClick: () => void }) {
                 
                 <button
                   onClick={handleLogout}
+                  disabled={logoutMutation.isPending}
                   className="w-full flex items-center gap-3 px-5 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
                 >
-                  <LogOut size={18} />
-                  Logout
+                  {logoutMutation.isPending ? (
+                    <>
+                      <div className="h-4 w-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
+                      Logging out...
+                    </>
+                  ) : (
+                    <>
+                      <LogOut size={18} />
+                      Logout
+                    </>
+                  )}
                 </button>
               </div>
             </div>
