@@ -27,7 +27,7 @@ export default function CommonForm({ initialData, onSubmit, phonePrefixes, desig
       available_time_slots: [{ day: "monday", start_time: "09:00", end_time: "17:00" }]
     },
     onSubmit: async ({ value }) => {
-      onSubmit(value);
+      await onSubmit(value);
     },
   });
 
