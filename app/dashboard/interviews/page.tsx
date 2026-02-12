@@ -414,6 +414,7 @@ export default function InterviewsPage() {
         {activeTab === "accepted" && (
              scheduledRequests.length === 0 ? <EmptyState message="No scheduled interviews." /> : (
                 scheduledRequests.map((req) => {
+                    const isJoiningThis = joinMutation.isPending && joinMutation.variables === req.id;
                     const confirmed = req.scheduled_time;
                     return (
                         <div key={req.id} className="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 border-l-4 border-l-green-500">
@@ -440,14 +441,24 @@ export default function InterviewsPage() {
                                     )}
                                 </div>
                             </div>
-                            <button disabled={!req.is_joinable} onClick={() => joinMutation.mutate(req.id)} 
+                            <button disabled={!req.is_joinable || isJoiningThis} onClick={() => joinMutation.mutate(req.id)} 
                                 className={`w-full md:w-auto px-6 py-2 font-medium rounded-xl transition shadow-md flex items-center justify-center gap-2 ${
-                                    req.is_joinable 
+                                    req.is_joinable && !isJoiningThis
                                     ? "bg-indigo-600 text-white hover:bg-indigo-700 cursor-pointer" 
                                     : "bg-gray-100 text-gray-400 cursor-not-allowed shadow-none"
                                 }`}>
-                                    {req.is_joinable ? <Video size={16} /> : <Lock size={16} />}
-                                    {req.is_joinable ? "Join Now" : "Not Started"}
+                                    {isJoiningThis ? (
+                                          "Joining..."
+                                      ) : req.is_joinable ? (
+                                          <>
+                                          <Video size={16} /> Join Now
+                                          </>
+                                      ) : (
+                                          <>
+                                          <Lock size={16} /> Not Started
+                                          </>
+                                      )
+                                    }
                             </button>
                         </div>
                     )

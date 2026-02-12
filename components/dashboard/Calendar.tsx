@@ -35,9 +35,10 @@ interface CalendarProps {
     events: any[];
     currentUser: any;
     onJoin: (id: string) => void;
+    isJoinPending: boolean;
 }
 
-const Calendar = ({ events, currentUser, onJoin }: CalendarProps) => {
+const Calendar = ({ events, currentUser, onJoin, isJoinPending }: CalendarProps) => {
   const router = useRouter(); 
   const [currentDate, setCurrentDate] = useState(new Date()); 
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -234,11 +235,15 @@ const Calendar = ({ events, currentUser, onJoin }: CalendarProps) => {
                                             {/* JOIN BUTTON */}
                                             {event.is_joinable && (
                                                 <button 
-                                                    disabled={!event.is_joinable} 
+                                                    disabled={!event.is_joinable || isJoinPending} 
                                                     onClick={() => onJoin(event.id)} 
-                                                    className="w-full py-2 bg-indigo-600 text-white text-xs font-bold rounded-lg hover:bg-indigo-700 transition flex items-center justify-center gap-2"
+                                                    className={`hover:cursor-pointer w-full py-2 text-sm text-white font-semibold rounded-xl transition shadow-lg flex justify-center items-center gap-2 relative z-10 ${
+                                                    event.is_joinable && !isJoinPending
+                                                        ? "bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200"
+                                                        : "bg-gray-300 cursor-not-allowed shadow-gray-100"
+                                                    }`}
                                                 >
-                                                    <Video size={14} /> Join Now
+                                                    <Video size={14} /> {isJoinPending ? "Joining..." : "Join Now"}
                                                 </button>
                                             )}
 

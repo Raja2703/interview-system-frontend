@@ -39,7 +39,8 @@ const Dashboard = () => {
             <Calendar 
                 events={events} 
                 currentUser={currentUser} 
-                onJoin={(id) => joinMutation.mutate(id)} 
+                onJoin={(id) => joinMutation.mutate(id)}
+                isJoinPending={joinMutation.isPending}
             />
         </div>
 
@@ -48,7 +49,8 @@ const Dashboard = () => {
             <NextInterview 
                 events={events} 
                 currentUser={currentUser} 
-                onJoin={(id) => joinMutation.mutate(id)} 
+                onJoin={(id) => joinMutation.mutate(id)}
+                isJoinPending={joinMutation.isPending}
             />
 
             {/* Quick Actions Component (Inline for simplicity, or extract if it grows) */}
