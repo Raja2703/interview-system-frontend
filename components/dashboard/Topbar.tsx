@@ -33,10 +33,12 @@ export default function Topbar({ onMenuClick }: { onMenuClick: () => void }) {
   const { getUserProfileQuery } = useUserQuery()
   const { data: userProfile, isLoading } = getUserProfileQuery;
 
+  console.log(userProfile)
+
   const user = {
     name: userProfile?.name || "User",
     role: userProfile?.roles.length == 2 ? "Both" : (userProfile?.roles[0] == 'taker' ? "Interviewer" : "Attender"),
-    credits: userProfile?.available_balance || 850,
+    credits: userProfile?.roles.length == 1 ? userProfile?.available_balance : userProfile?.available_balance + userProfile?.available_earnings,
     avatarUrl: "https://api.dicebear.com/9.x/identicon/svg?seed=Jameson",
     progress: userProfile?.onboarding_progress || 0 
   }

@@ -6,13 +6,16 @@ import { notificationKeys } from "./notifications.keys";
 
 export const useNotificationsSocket = () => {
   const queryClient = useQueryClient();
+  const serverUrl: string = process.env.NEXT_PUBLIC_SERVER_URL || "";
+  const url = new URL(serverUrl);
+  const host = url.host;
 
   useEffect(() => {
     const token = sessionStorage.getItem("accessToken");
     if (!token) return;
 
     const ws = new WebSocket(
-      `ws://127.0.0.1:8000/ws/notifications/?token=${token}`
+      `ws://${host}/ws/notifications/?token=${token}`
     );
 
     ws.onopen = () => {
