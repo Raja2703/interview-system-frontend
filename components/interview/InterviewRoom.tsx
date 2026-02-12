@@ -438,9 +438,44 @@ function RemoteVideoTrack({ track, fit = "cover" }: { track: RemoteTrack, fit?: 
 
 function RemoteAudioTrack({ track }: { track: RemoteTrack }) {
     const audioRef = useRef<HTMLAudioElement>(null);
+
     useEffect(() => {
-      if (audioRef.current) track.attach(audioRef.current);
+      const el = audioRef.current;
+      if (el) {
+        track.attach(el);
+        
+        // --- FORCE SPEAKER LOGIC (ANDROID ONLY) ---
+        const forceSpeaker = async () => {
+           try {
+              // Check if browser supports audio output selection
+              // @ts-ignore - setSinkId is not yet in all TS definitions
+              if (typeof el.setSinkId !== 'function') return;
+
+              const devices = await navigator.mediaDevices.enumerateDevices();
+              const audioOutputs = devices.filter(d => d.kind === 'audiooutput');
+
+              // Attempt to find the "speaker" or "hands-free" device
+              // Note: Labels might be empty if permissions aren't fully granted yet, 
+              // but usually are available during an active call.
+              const speaker = audioOutputs.find(d => 
+                  d.label.toLowerCase().includes('speaker') || 
+                  d.label.toLowerCase().includes('hands-free')
+              );
+
+              if (speaker) {
+                  // @ts-ignore
+                  await el.setSinkId(speaker.deviceId);
+              }
+           } catch (e) {
+              console.warn("Failed to set audio output:", e);
+           }
+        };
+
+        forceSpeaker();
+      }
+
       return () => { track.detach(); };
     }, [track]);
-    return <audio ref={audioRef} />;
+
+    return <audio ref={audioRef} autoPlay playsInline />;
 }
