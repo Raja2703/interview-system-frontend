@@ -9,14 +9,13 @@ export const useNotificationsSocket = () => {
   const serverUrl: string = process.env.NEXT_PUBLIC_SERVER_URL || "";
   const url = new URL(serverUrl);
   const host = url.host;
-  const protocol = window.location.protocol === "https:" ? "wss" : "ws";
 
   useEffect(() => {
     const token = sessionStorage.getItem("accessToken");
     if (!token) return;
 
     const ws = new WebSocket(
-      `${protocol}://${host}/ws/notifications/?token=${token}`
+      `wss://${host}/ws/notifications/?token=${token}`
     );
 
     ws.onopen = () => {
