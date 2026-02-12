@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { AUTH } from "@/constants";
 import isValidLinkedInProfile from "@/utils/validateLinkedin";
+import type { Dayjs } from 'dayjs';
 
 const minPasswordLength = AUTH?.MIN_PASSWORD_LENGTH || 8;
 
@@ -168,4 +169,37 @@ export const candidateFeedbackSchema = z.object({
   professionalism_rating: z.number().min(1, "Rating is required").max(5),
   comments: z.string().min(10, "Minimum 10 characters required"),
   would_recommend: z.boolean().optional(), // Kept optional as there is no UI input for it yet
+});
+
+// Custom validator for Time Slots
+export const timeSlotsSchema = z
+  .array(
+    z.object({
+      day: z.string(),
+      start_time: z.string(),
+      end_time: z.string(),
+    })
+  )
+  .superRefine((slots, ctx) => {
+    slots.forEach((slot, index) => {
+      if (slot.start_time >= slot.end_time) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `End time must be after start time for ${slot.day}`,
+          path: [index, "end_time"],
+        });
+      }
+    });
+  });
+
+
+export const interviewBookingTimeSlotSchema = z.object({
+  topic: z.string().min(3, "Topic must be at least 3 characters long"),
+  message: z.string().optional(),
+  duration: z.number(),
+  slots: z.array(z.custom<Dayjs | null>())
+    .min(1, "At least one time slot is required")
+    .refine((slots) => slots.some((slot) => slot !== null), {
+      message: "Please select at least one valid date and time",
+    }),
 });

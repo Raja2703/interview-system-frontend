@@ -11,13 +11,19 @@ import {
 } from "lucide-react";
 import CustomSelect from "@/components/CustomSelect"
 import { Skill, Expertise, TimeSlot } from '@/types'
+import dayjs from "dayjs";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers';
 
 // --- Validation Imports ---
 import zodFieldValidator from "@/utils/zodvalidator";
 import { 
   commonSchema, 
   interviewerSchema, 
-  intervieweeSchema 
+  intervieweeSchema,
+  timeSlotsSchema
 } from "@/types/zodSchemas";
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:8000";
@@ -49,6 +55,11 @@ export default function ProfilePage() {
 
   return <ProfileFormContent initialData={userData} />;
 }
+
+// Helper to handle the "HH:mm" string <-> Dayjs Object conversion
+const parseTime = (timeStr: string | null | undefined) => {
+  return timeStr ? dayjs(timeStr, "HH:mm") : null;
+};
 
 function ProfileFormContent({ initialData }: { initialData: any }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -436,70 +447,184 @@ function ProfileFormContent({ initialData }: { initialData: any }) {
               />
 
               {/* Available Time Slots */}
-              <form.Field 
-                name="available_time_slots" 
-                mode="array"
-                validators={{
-                    onChange: zodFieldValidator(commonSchema.shape.available_time_slots)
-                }}
-                children={(field) => (
-                <div className="col-span-2 pt-6 border-t border-gray-100">
-                  <div className="flex justify-between items-center mb-4">
-                    <label className={labelStyle}>Availability</label>
-                    {isEditing && (
-                      <button 
-                        type="button" 
-                        onClick={() => field.pushValue({ day: "monday", start_time: "09:00", end_time: "10:00" })}
-                        className="flex items-center gap-1 text-xs font-bold text-indigo-600 hover:bg-indigo-50 px-2 py-1 rounded-lg transition"
-                      >
-                        <Plus size={14} /> Add Slot
-                      </button>
-                    )}
-                  </div>
-                  
-                  {isEditing && <FieldInfo field={field} />}
-
-                  <div className="space-y-3">
-                    {field.state.value?.map((slot: TimeSlot, idx: number) => (
-                      <div key={idx} className="flex flex-wrap items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200">
-                        <div className="flex-1 min-w-[120px]">
-                          {isEditing ? (
-                            <form.Field name={`available_time_slots[${idx}].day`} children={(sub) => (
-                              <CustomSelect 
-                                    name={sub.name}
-                                    value={sub.state.value}
-                                    onChange={sub.handleChange}
-                                    options={daysOfWeek} 
-                                />
-                            )} />
-                          ) : <span className="text-sm text-slate-600 font-bold capitalize">{slot.day}</span>}
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                          <Clock size={14} className="text-slate-400" />
-                          {isEditing ? (
-                            <div className="flex items-center gap-2">
-                              <form.Field name={`available_time_slots[${idx}].start_time`} children={(sub) => (
-                                <input name={sub.name} type="time" value={sub.state.value} onChange={(e) => sub.handleChange(e.target.value)} className={getInputStyle(true)} />
-                              )} />
-                              <span className="text-slate-400">-</span>
-                              <form.Field name={`available_time_slots[${idx}].end_time`} children={(sub) => (
-                                <input name={sub.name} type="time" value={sub.state.value} onChange={(e) => sub.handleChange(e.target.value)} className={getInputStyle(true)} />
-                              )} />
-                            </div>
-                          ) : <span className="text-sm text-slate-600 font-medium">{slot.start_time} - {slot.end_time}</span>}
-                        </div>
-
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <form.Field 
+                  name="available_time_slots" 
+                  mode="array"
+                  validators={{
+                    onChange: zodFieldValidator(timeSlotsSchema),
+                  }}
+                  children={(field) => (
+                    <div className="col-span-2 pt-6 border-t border-gray-100">
+                      <div className="flex justify-between items-center mb-4">
+                        <label className={labelStyle}>Availability</label>
                         {isEditing && (
-                          <button type="button" onClick={() => field.removeValue(idx)} className="ml-auto p-1.5 text-slate-400 hover:text-red-500 transition">
-                            <X size={18} />
+                          <button 
+                            type="button" 
+                            onClick={() => field.pushValue({ day: "monday", start_time: "09:00", end_time: "10:00" })}
+                            className="flex items-center gap-1 text-xs font-bold text-indigo-600 hover:bg-indigo-50 px-2 py-1 rounded-lg transition"
+                          >
+                            <Plus size={14} /> Add Slot
                           </button>
                         )}
                       </div>
-                    ))}
-                  </div>
-                </div>
-              )} />
+                      
+                      {/* Global Array Errors */}
+                      {isEditing && field.state.meta.errors.length > 0 && (
+                        <div className="mb-3 text-sm text-red-600">
+                          {field.state.meta.errors[0]}
+                        </div>
+                      )}
+
+                      <div className="space-y-3">
+                        {field.state.value?.map((slot, idx) => (
+                          <div key={idx} className="flex flex-col gap-1">
+                            <div className="flex flex-wrap items-center gap-3 py-1 rounded-xl">
+                              
+                              {/* Day Selection (Unchanged) */}
+                              <div className="flex-1 min-w-[120px]">
+                                {isEditing ? (
+                                  <form.Field 
+                                    name={`available_time_slots[${idx}].day`} 
+                                    children={(sub) => (
+                                      <CustomSelect 
+                                        name={sub.name}
+                                        value={sub.state.value}
+                                        onChange={sub.handleChange}
+                                        options={daysOfWeek} 
+                                      />
+                                    )} 
+                                  />
+                                ) : (
+                                  <span className="text-sm text-slate-600 font-bold capitalize">{slot.day}</span>
+                                )}
+                              </div>
+
+                              {/* Time Pickers */}
+                              <div className="flex items-center gap-2">
+                                {isEditing ? (
+                                  <div className="flex items-center gap-2">
+                                    
+                                    {/* START TIME */}
+                                    <form.Field 
+                                      name={`available_time_slots[${idx}].start_time`}
+                                      validators={{
+                                        onChange: () => {
+                                          // Trigger validation on the array field to check logic
+                                          setTimeout(() => field.validate('change'), 0);
+                                          return undefined;
+                                        }
+                                      }}
+                                      children={(sub) => (
+                                        <div className="w-[110px]">
+                                          <TimePicker
+                                            value={parseTime(sub.state.value)}
+                                            onChange={(newValue) => sub.handleChange(newValue ? newValue.format("HH:mm") : "")}
+                                            viewRenderers={{
+                                              hours: renderTimeViewClock,
+                                              minutes: renderTimeViewClock,
+                                              seconds: renderTimeViewClock,
+                                            }}
+                                            slotProps={{
+                                              textField: {
+                                                size: "small",
+                                                placeholder: "Start",
+                                                error: sub.state.meta.errors.length > 0,
+                                                sx: { 
+                                                  '& .MuiOutlinedInput-root': { 
+                                                    borderRadius: '0.75rem', 
+                                                    backgroundColor: 'white' 
+                                                  } 
+                                                }
+                                              }
+                                            }}
+                                          />
+                                        </div>
+                                      )} 
+                                    />
+
+                                    <span className="text-slate-400">-</span>
+
+                                    {/* END TIME */}
+                                    <form.Field 
+                                      name={`available_time_slots[${idx}].end_time`}
+                                      validators={{
+                                        onChange: ({ value }) => {
+                                          const parentValue = field.state.value;
+                                          const currentSlot = parentValue[idx];
+                                          
+                                          // Validate end_time > start_time
+                                          if (currentSlot.start_time && value && value <= currentSlot.start_time) {
+                                            return `Must be after start`;
+                                          }
+                                          
+                                          setTimeout(() => field.validate('change'), 0);
+                                          return undefined;
+                                        }
+                                      }}
+                                      children={(sub) => (
+                                        <div className="relative w-[110px]">
+                                          <TimePicker
+                                            value={parseTime(sub.state.value)}
+                                            onChange={(newValue) => sub.handleChange(newValue ? newValue.format("HH:mm") : "")}
+                                            viewRenderers={{
+                                              hours: renderTimeViewClock,
+                                              minutes: renderTimeViewClock,
+                                              seconds: renderTimeViewClock,
+                                            }}
+                                            slotProps={{
+                                              textField: {
+                                                size: "small",
+                                                placeholder: "End",
+                                                error: sub.state.meta.errors.length > 0,
+                                                sx: { 
+                                                  '& .MuiOutlinedInput-root': { 
+                                                    borderRadius: '0.75rem', 
+                                                    backgroundColor: 'white' 
+                                                  } 
+                                                }
+                                              }
+                                            }}
+                                          />
+                                          {/* Error Message */}
+                                          {sub.state.meta.errors.length > 0 && (
+                                            <span className="absolute top-full left-0 mt-1 text-[10px] leading-tight text-red-600 z-10 bg-white px-1 border border-red-100 rounded shadow-sm">
+                                              {sub.state.meta.errors[0]}
+                                            </span>
+                                          )}
+                                        </div>
+                                      )} 
+                                    />
+                                  </div>
+                                ) : (
+                                  // Read Only View
+                                  <div className="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-lg border border-gray-100">
+                                    <Clock size={14} className="text-slate-400" />
+                                    <span className="text-sm text-slate-600 font-medium">
+                                      {slot.start_time} - {slot.end_time}
+                                    </span>
+                                  </div>
+                                )}
+                              </div>
+
+                              {/* Delete Button */}
+                              {isEditing && (
+                                <button 
+                                  type="button" 
+                                  onClick={() => field.removeValue(idx)} 
+                                  className="ml-auto p-1.5 text-slate-400 hover:text-red-500 transition"
+                                >
+                                  <X size={18} />
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )} 
+                />
+              </LocalizationProvider>
             </div>
           </div>
 

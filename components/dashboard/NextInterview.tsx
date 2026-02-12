@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import Link from "next/link";
 import { Clock, Video } from "lucide-react";
 import { format, isToday, parseISO } from "date-fns";
@@ -9,11 +9,11 @@ interface NextInterviewProps {
     events: any[];
     currentUser: any;
     onJoin: (id: string) => void;
+    isJoinPending: boolean;
 }
 
-const NextInterview = ({ events, currentUser, onJoin }: NextInterviewProps) => {
-    
-  const nextInterview = useMemo(() => {
+const NextInterview = ({ events, currentUser, onJoin, isJoinPending }: NextInterviewProps) => {
+    const nextInterview = useMemo(() => {
       if (!events) return null;
       // Filter for accepted events that have a time
       const upcoming = events.filter((e: any) => 
@@ -63,15 +63,15 @@ const NextInterview = ({ events, currentUser, onJoin }: NextInterviewProps) => {
                 </div>
                 
                 <button 
-                    disabled={!nextInterview.is_joinable}
-                    onClick={() => onJoin(nextInterview.id)}
-                    className={`w-full py-3 text-white font-semibold rounded-xl transition shadow-lg flex justify-center items-center gap-2 relative z-10 ${
-                        nextInterview.is_joinable 
-                        ? "bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200" 
+                    disabled={!nextInterview.is_joinable || isJoinPending}
+                    onClick={() => { onJoin(nextInterview.id) }}
+                    className={`hover:cursor-pointer w-full py-3 text-white font-semibold rounded-xl transition shadow-lg flex justify-center items-center gap-2 relative z-10 ${
+                    nextInterview.is_joinable && !isJoinPending
+                        ? "bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200"
                         : "bg-gray-300 cursor-not-allowed shadow-gray-100"
                     }`}
                 >
-                    <Video size={18} /> Join Meeting Room
+                    <Video size={18} /> {isJoinPending ? "Joining..." : "Join Meeting Room"}
                 </button>
             </>
         ) : (

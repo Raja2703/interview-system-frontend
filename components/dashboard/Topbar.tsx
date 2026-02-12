@@ -36,7 +36,7 @@ export default function Topbar({ onMenuClick }: { onMenuClick: () => void }) {
   const user = {
     name: userProfile?.name || "User",
     role: userProfile?.roles.length == 2 ? "Both" : (userProfile?.roles[0] == 'taker' ? "Interviewer" : "Attender"),
-    credits: userProfile?.credits || 850,
+    credits: userProfile?.available_balance || 850,
     avatarUrl: "https://api.dicebear.com/9.x/identicon/svg?seed=Jameson",
     progress: userProfile?.onboarding_progress || 0 
   }
