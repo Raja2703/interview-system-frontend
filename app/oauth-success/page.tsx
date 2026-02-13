@@ -33,6 +33,7 @@ export default function OAuthSuccess() {
   // Step 2: redirect after profile loads
   useEffect(() => {
     if (!ready) return;
+    console.log(userProfile)
 
     if (isError) {
       toast.error("Failed to load profile");
