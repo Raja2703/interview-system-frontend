@@ -333,12 +333,13 @@ export default function InterviewsPage() {
   if (isError) return <div className="mt-20 text-center text-red-500">Failed to load interviews.</div>;
 
   return (
-    <div className="mt-15 space-y-6 max-w-5xl mx-auto">
+    <div className="mt-1 lg:mt-15 space-y-6 max-w-7xl">
       {/* Header & Tabs */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
         <div>
-           <h1 className="text-2xl font-bold text-gray-900">Interviews</h1>
-           <p className="text-gray-500 text-sm">Manage your schedule and requests.</p>
+           {/* <h1 className="text-2xl font-bold text-gray-900">Interviews</h1>
+           <p className="text-gray-500 text-sm">Manage your schedule and requests.</p> */}
+           <h3 className="text-lg text-gray-500">Manage your schedule and requests.</h3>
         </div>
         <div className="flex flex-wrap p-1 bg-gray-100 rounded-xl">
           {[

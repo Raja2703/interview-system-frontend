@@ -61,9 +61,11 @@ export default function NotificationsPage() {
   }
 
   return (
-    <div className="mt-15 max-w-3xl mx-auto">
+    <div className="mt-1 lg:mt-15 max-w-7xl">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Notifications</h1>
+        {/* <h1 className="text-2xl font-bold text-gray-900">Notifications</h1> */}
+        <h3 className="text-lg text-gray-500">See all your app notifications</h3>
+
         <button
           onClick={() => markAll.mutate()}
           className="text-sm text-indigo-600 font-semibold hover:underline"

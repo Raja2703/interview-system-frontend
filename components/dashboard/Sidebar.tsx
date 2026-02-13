@@ -11,7 +11,7 @@ const navItems = [
   { name: "Notifications", href: "/dashboard/notifications", icon: Bell },
 ];
 
-export default function Sidebar({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (v: boolean) => void }) {
+export default function Sidebar({ isOpen, setIsOpen, setTopbarTitle }: { isOpen: boolean; setIsOpen: (v: boolean) => void; setTopbarTitle: (title: string)=>void }) {
   const pathname = usePathname();
 
   return (
@@ -48,7 +48,10 @@ export default function Sidebar({ isOpen, setIsOpen }: { isOpen: boolean; setIsO
               <Link
                 key={item.href}
                 href={item.href}
-                onClick={() => setIsOpen(false)} // Close on mobile when clicked
+                onClick={() => {
+                  setTopbarTitle(item.name)
+                  setIsOpen(false)
+                }} // Close on mobile when clicked
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
                   isActive
                     ? "bg-indigo-50 text-indigo-600 font-semibold shadow-sm shadow-indigo-100"

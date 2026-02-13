@@ -31,7 +31,7 @@ const Dashboard = () => {
   const currentUser = userProfile;
 
   return (
-    <div className="mt-15 space-y-6 relative">
+    <div className="mt-3 lg:mt-15 space-y-6 relative">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
         {/* --- LEFT COLUMN: CALENDAR --- */}

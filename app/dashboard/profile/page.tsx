@@ -182,13 +182,13 @@ function ProfileFormContent({ initialData }: { initialData: any }) {
   };
 
   return (
-    <div className="mt-15 space-y-6 max-w-5xl mx-auto pb-10">
+    <div className="mt-0 lg:mt-15 space-y-6 max-w-7xl pb-10">
       
       {/* Header & Actions */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-2">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Profile Settings</h1>
-          <p className="text-sm text-slate-500">Manage your personal information and role details.</p>
+          {/* <h1 className="text-2xl font-bold text-slate-900">Profile Settings</h1> */}
+          <p className="text-lg text-slate-500">Manage your personal information and role details.</p>
         </div>
         
         <div className="flex gap-3">

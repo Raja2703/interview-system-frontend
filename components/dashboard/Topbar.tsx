@@ -11,7 +11,7 @@ import { useNotificationsQuery } from "@/hooks/notifications/notifications.queri
 import { useMarkNotificationRead, useMarkAllNotificationsRead } from "@/hooks/notifications/notifications.mutations";
 import { getNotificationIcon } from "@/utils/notifications/notificationsUI"
 
-export default function Topbar({ onMenuClick }: { onMenuClick: () => void }) {
+export default function Topbar({ onMenuClick, topbarTitle, setTopbarTitle }: { onMenuClick: () => void; topbarTitle: string; setTopbarTitle: (title: string)=>void }) {
   const router = useRouter();
 
   const { data } = useNotificationsQuery({ page: 1 });
@@ -32,8 +32,6 @@ export default function Topbar({ onMenuClick }: { onMenuClick: () => void }) {
   const logoutMutation = useLogoutMutation()
   const { getUserProfileQuery } = useUserQuery()
   const { data: userProfile, isLoading } = getUserProfileQuery;
-
-  console.log(userProfile)
 
   const user = {
     name: userProfile?.name || "User",
@@ -157,8 +155,8 @@ export default function Topbar({ onMenuClick }: { onMenuClick: () => void }) {
         >
           <Menu size={24} />
         </button>
-        <h2 className="text-lg font-semibold text-gray-800 hidden sm:block">
-          Dashboard
+        <h2 className="text-xl font-semibold text-gray-800 hidden sm:block">
+          {topbarTitle}
         </h2>
       </div>
 
@@ -228,7 +226,7 @@ export default function Topbar({ onMenuClick }: { onMenuClick: () => void }) {
 
               {/* Footer */}
               <div className="p-3 bg-gray-50 border-t border-gray-100 text-center">
-                 <Link href="/dashboard/notifications" className="text-xs font-bold text-indigo-600 hover:text-indigo-800 hover:underline">
+                 <Link onClick={()=>setIsNotificationsOpen(false)} href="/dashboard/notifications" className="text-xs font-bold text-indigo-600 hover:text-indigo-800 hover:underline">
                     View All Activity
                  </Link>
               </div>
@@ -298,7 +296,10 @@ export default function Topbar({ onMenuClick }: { onMenuClick: () => void }) {
               <div className="py-2">
                 <Link
                   href="/dashboard/profile"
-                  onClick={() => setIsProfileOpen(false)}
+                  onClick={() => {
+                    setTopbarTitle("Profile Settings")
+                    setIsProfileOpen(false)
+                  }}
                   className="flex items-center gap-3 px-5 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
                 >
                   <Settings size={18} className="text-gray-400" />

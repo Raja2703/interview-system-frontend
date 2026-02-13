@@ -145,15 +145,15 @@ export default function ExpertsPage() {
         activeCount={activeFilterCount}
       />
 
-      <div className="mt-10 p-6 lg:p-10 w-full max-w-7xl mx-auto">
+      <div className="mt-1 lg:mt-15 w-full max-w-7xl mx-auto">
         
         {/* Header & Search Bar */}
         <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Find Experts</h1>
-            <p className="text-gray-500 mb-6">Connect with top industry professionals.</p>
+            {/* <h1 className="text-3xl font-bold text-gray-900 mb-2">Find Experts</h1> */}
+            <h3 className="text-lg text-gray-500 mb-6">Connect with top industry professionals.</h3>
             
-            <div className="flex flex-col sm:flex-row gap-4">
-                <div className="relative flex-grow max-w-2xl">
+            <div className="flex flex-row gap-4">
+                <div className="relative flex-grow max-w-7xl">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                     <input 
                         type="text" 
