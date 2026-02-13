@@ -43,7 +43,7 @@ export default function OAuthSuccess() {
 
     if (isLoading || !userProfile) return;
 
-    if (!userProfile.has_role) {
+    if (userProfile.roles.length == 0) {
       router.replace("/select-role");
       return;
     }
