@@ -17,6 +17,7 @@ interface InterviewerFormProps {
   isSubmitting: boolean;
   expertiseLevels: Array<{ value: string; label: string }>;
   skillOptions: string[];
+  isLastStep: boolean;
 }
 
 export default function InterviewerForm({
@@ -26,6 +27,7 @@ export default function InterviewerForm({
   isSubmitting,
   expertiseLevels,
   skillOptions,
+  isLastStep
 }: InterviewerFormProps) {
   
   const defaultLevel = expertiseLevels?.[2]?.value || "expert";
@@ -265,7 +267,10 @@ export default function InterviewerForm({
                 disabled={!canSubmit || formSubmitting}
                 className="px-8 py-3 rounded-xl text-sm font-bold text-white bg-indigo-600 shadow-lg shadow-indigo-200 hover:bg-indigo-700 hover:shadow-indigo-300 transition-all transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                {formSubmitting ? "Saving..." : "Continue"}
+                  {isLastStep ?
+                    (formSubmitting ? "Finishing..." : "Finish Profile") 
+                   :(formSubmitting ? "Saving..." : "Continue")
+                  }
                 </button>
             )}
         />

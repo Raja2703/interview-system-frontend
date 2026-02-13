@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background font-sans">
       <main className="text-text-primary flex min-h-screen w-full max-w-3xl flex-col items-center justify-between sm:items-start">
-        Interview system
+        AgentsFactory
       </main>
     </div>
   );

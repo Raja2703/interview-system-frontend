@@ -225,7 +225,7 @@ export default function CommonForm({ initialData, onSubmit, phonePrefixes, desig
                 : "bg-indigo-600 hover:bg-indigo-700 hover:shadow-indigo-300"
               }`}
             >
-              Continue to Next Step
+              {isSubmitting ? "Saving..." : "Continue"}
             </button>
           </div>
         )}

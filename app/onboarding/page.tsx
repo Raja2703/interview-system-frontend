@@ -196,6 +196,7 @@ export default function OnboardingPage() {
               daysOfWeek={daysOfWeek}
               expertiseLevels={expertiseLevels}
               skillOptions={skillOptions}
+              isLastStep={isLastStep}
             />
           )}
 

@@ -15,6 +15,7 @@ import { toast } from 'react-toastify';
 import { useState } from "react"
 import { useSignupMutation } from '@/hooks/auth/auth.mutations'
 import { useAuthGuard } from "@/hooks/auth/auth.guard"
+import Logo from "@/components/Logo"
 
 export default function SignUpPage() {
   useAuthGuard("guest");
@@ -78,11 +79,11 @@ export default function SignUpPage() {
       {/* --- Header --- */}
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
         <div className="flex justify-center items-center gap-2 mb-2">
-          <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold">
-            EL
+          <div className="h-8 w-8 rounded-lg flex items-center justify-center text-white font-bold">
+            <Logo />
           </div>
           <h2 className="text-2xl font-extrabold text-text-primary tracking-wide">
-            ExpertLink
+            AgentsFactory
           </h2>
         </div>
 

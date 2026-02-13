@@ -33,7 +33,7 @@ export default function Sidebar({ isOpen, setIsOpen }: { isOpen: boolean; setIsO
         {/* Logo Area */}
         <div className="h-16 flex items-center justify-between px-6 border-b border-gray-100">
           <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
-            Interview System
+            AgentsFactory
           </span>
           <button onClick={() => setIsOpen(false)} className="lg:hidden text-gray-500 hover:text-gray-700">
             <X size={24} />
