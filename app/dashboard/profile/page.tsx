@@ -10,12 +10,11 @@ import {
   User, Briefcase, Linkedin, Award, Loader2, Save, X, Pencil, Clock, Plus, AlertCircle, ShieldCheck
 } from "lucide-react";
 import CustomSelect from "@/components/CustomSelect"
-import { Skill, Expertise, TimeSlot } from '@/types'
+import { Skill, Expertise } from '@/types'
 import dayjs from "dayjs";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { TimePicker } from '@mui/x-date-pickers/TimePicker';
-import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers';
+import BasicTimePicker from "@/components/ui/TimePicker";
 
 // --- Validation Imports ---
 import zodFieldValidator from "@/utils/zodvalidator";
@@ -306,6 +305,7 @@ function ProfileFormContent({ initialData }: { initialData: any }) {
                             name={field.name}
                             value={field.state.value}
                             onChange={field.handleChange}
+                            searchable={true}
                             options={phonePrefixes.map((p: any) => ({ label: p.code, value: p.code }))}
                         />
                     ) : <p className="text-sm font-semibold text-slate-900">{field.state.value || "--"}</p>}
@@ -356,6 +356,7 @@ function ProfileFormContent({ initialData }: { initialData: any }) {
                         onChange={field.handleChange}
                         options={designationOptions}
                         placeholder="Select Designation"
+                        searchable={true}
                         hasError={field.state.meta.errors.length > 0}
                     />
                     <FieldInfo field={field} />
@@ -481,7 +482,7 @@ function ProfileFormContent({ initialData }: { initialData: any }) {
                           <div key={idx} className="flex flex-col gap-1">
                             <div className="flex flex-wrap items-center gap-3 py-1 rounded-xl">
                               
-                              {/* Day Selection (Unchanged) */}
+                              {/* Day Selection */}
                               <div className="flex-1 min-w-[120px]">
                                 {isEditing ? (
                                   <form.Field 
@@ -510,34 +511,17 @@ function ProfileFormContent({ initialData }: { initialData: any }) {
                                       name={`available_time_slots[${idx}].start_time`}
                                       validators={{
                                         onChange: () => {
-                                          // Trigger validation on the array field to check logic
                                           setTimeout(() => field.validate('change'), 0);
                                           return undefined;
                                         }
                                       }}
                                       children={(sub) => (
                                         <div className="w-[110px]">
-                                          <TimePicker
+                                          <BasicTimePicker
+                                            label="Start"
                                             value={parseTime(sub.state.value)}
                                             onChange={(newValue) => sub.handleChange(newValue ? newValue.format("HH:mm") : "")}
-                                            viewRenderers={{
-                                              hours: renderTimeViewClock,
-                                              minutes: renderTimeViewClock,
-                                              seconds: renderTimeViewClock,
-                                            }}
-                                            slotProps={{
-                                              textField: {
-                                                size: "small",
-                                                placeholder: "Start",
-                                                error: sub.state.meta.errors.length > 0,
-                                                sx: { 
-                                                  '& .MuiOutlinedInput-root': { 
-                                                    borderRadius: '0.75rem', 
-                                                    backgroundColor: 'white' 
-                                                  } 
-                                                }
-                                              }
-                                            }}
+                                            error={sub.state.meta.errors.length > 0}
                                           />
                                         </div>
                                       )} 
@@ -552,41 +536,23 @@ function ProfileFormContent({ initialData }: { initialData: any }) {
                                         onChange: ({ value }) => {
                                           const parentValue = field.state.value;
                                           const currentSlot = parentValue[idx];
-                                          
-                                          // Validate end_time > start_time
                                           if (currentSlot.start_time && value && value <= currentSlot.start_time) {
                                             return `Must be after start`;
                                           }
-                                          
                                           setTimeout(() => field.validate('change'), 0);
                                           return undefined;
                                         }
                                       }}
                                       children={(sub) => (
                                         <div className="relative w-[110px]">
-                                          <TimePicker
+                                          <BasicTimePicker
+                                            label="End"
                                             value={parseTime(sub.state.value)}
                                             onChange={(newValue) => sub.handleChange(newValue ? newValue.format("HH:mm") : "")}
-                                            viewRenderers={{
-                                              hours: renderTimeViewClock,
-                                              minutes: renderTimeViewClock,
-                                              seconds: renderTimeViewClock,
-                                            }}
-                                            slotProps={{
-                                              textField: {
-                                                size: "small",
-                                                placeholder: "End",
-                                                error: sub.state.meta.errors.length > 0,
-                                                sx: { 
-                                                  '& .MuiOutlinedInput-root': { 
-                                                    borderRadius: '0.75rem', 
-                                                    backgroundColor: 'white' 
-                                                  } 
-                                                }
-                                              }
-                                            }}
+                                            error={sub.state.meta.errors.length > 0}
                                           />
-                                          {/* Error Message */}
+                                          
+                                          {/* Error Message Overlay */}
                                           {sub.state.meta.errors.length > 0 && (
                                             <span className="absolute top-full left-0 mt-1 text-[10px] leading-tight text-red-600 z-10 bg-white px-1 border border-red-100 rounded shadow-sm">
                                               {sub.state.meta.errors[0]}
@@ -899,6 +865,7 @@ function ProfileFormContent({ initialData }: { initialData: any }) {
                                 onChange={field.handleChange}
                                 options={targetRoles}
                                 placeholder="Select Designation"
+                                searchable={true}
                                 hasError={field.state.meta.errors.length > 0}
                             />
                               <FieldInfo field={field} />

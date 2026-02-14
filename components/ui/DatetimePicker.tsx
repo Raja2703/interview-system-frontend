@@ -19,6 +19,7 @@ export default function DateTimePickerComponent({ value, onChange, label = "Sele
         <DateTimePicker
           onChange={(newValue)=>onChange(newValue)}
           label={label}
+          disablePast={true}
           slotProps={{
           textField: {
             fullWidth: true,

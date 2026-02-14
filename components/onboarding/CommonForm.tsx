@@ -84,6 +84,7 @@ export default function CommonForm({ initialData, onSubmit, phonePrefixes, desig
               <CustomSelect 
                     value={field.state.value}
                     onChange={field.handleChange}
+                    searchable={true}
                     options={phonePrefixes.map((p: any) => ({ label: p.code, value: p.code }))}
                 />
           </div>
@@ -127,6 +128,7 @@ export default function CommonForm({ initialData, onSubmit, phonePrefixes, desig
                     value={field.state.value}
                     onChange={field.handleChange}
                     options={designationOptions}
+                    searchable={true}
                     placeholder="Select Designation"
                 />
               </div>

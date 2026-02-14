@@ -10,9 +10,11 @@ import { useRouter } from "next/navigation";
 import { useNotificationsQuery } from "@/hooks/notifications/notifications.queries";
 import { useMarkNotificationRead, useMarkAllNotificationsRead } from "@/hooks/notifications/notifications.mutations";
 import { getNotificationIcon } from "@/utils/notifications/notificationsUI"
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function Topbar({ onMenuClick, topbarTitle, setTopbarTitle }: { onMenuClick: () => void; topbarTitle: string; setTopbarTitle: (title: string)=>void }) {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const { data } = useNotificationsQuery({ page: 1 });
   const markAllReadMutation = useMarkAllNotificationsRead();
@@ -74,6 +76,12 @@ export default function Topbar({ onMenuClick, topbarTitle, setTopbarTitle }: { o
         onSuccess: async(data) => {
           sessionStorage.removeItem("accessToken");
           sessionStorage.removeItem("refreshToken");
+
+          // This purges the Next.js router cache and refetches the current server components
+          router.refresh();
+          queryClient.removeQueries();
+          queryClient.invalidateQueries();
+          
           toast.success(data?.message || "Logout successful");
           router.replace("/login");
         },

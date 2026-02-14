@@ -80,6 +80,7 @@ export default function ExpertsFilter({
                             options={enums.designation_options} 
                             selected={filters.designations} 
                             onChange={(val) => onToggle("designations", val)} 
+                            searchable
                         />
                         <FilterSection 
                             title="Expertise Level" 
@@ -102,6 +103,7 @@ export default function ExpertsFilter({
                             selected={filters.languages} 
                             onChange={(val) => onToggle("languages", val)} 
                             limit={5}
+                            searchable
                         />
                     </div>
                 )}

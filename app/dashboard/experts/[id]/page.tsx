@@ -27,7 +27,7 @@ export default function ExpertDetailsPage({ params }: { params: Promise<{ id: st
   )
 
   return (
-    <div className="mt-15 max-w-4xl mx-auto">
+    <div className="mt-15 max-w-7xl">
       <Link href="/dashboard/experts" className="inline-flex items-center text-gray-500 hover:text-indigo-600 mb-6 transition">
         <ArrowLeft size={18} className="mr-2" /> Back to Experts
       </Link>
