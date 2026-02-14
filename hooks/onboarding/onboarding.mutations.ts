@@ -3,6 +3,7 @@ import { onboardingApi } from "@/controller/onboarding.api";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { getErrorMessage } from "@/utils/error"
+import { userKeys } from "@/hooks/user/user.keys";
 
 export const useOnboardingMutations = () => {
   const queryClient = useQueryClient();
@@ -21,8 +22,14 @@ export const useOnboardingMutations = () => {
   const completeOnboardingMutation = useMutation({
     mutationFn: (payload: any) => onboardingApi.completeOnboarding(payload),
     onSuccess: (data) => {
+      // 1. refetch profile data
+      queryClient.invalidateQueries({ queryKey: userKeys.profile() });
+
+      // 2. Show success message
       toast.success(data.message || "Welcome aboard! Profile setup complete.");
-      router.push("/dashboard"); // Redirect to home/dashboard
+
+      // 3. redirect to dashboard
+      router.push("/dashboard");
     },
     onError: (error: any) => {
       const message = getErrorMessage(error);
